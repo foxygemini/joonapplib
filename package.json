@@ -1,0 +1,22 @@
+{
+  "name": "joonapp-library",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/username/repository.git"
+  },
+  "description": "Public library for joonapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require babel-register test/*.js --exit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
+  }
+}
