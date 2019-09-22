@@ -1,46 +1,42 @@
 class MsgBroker{
   constructor(){
+    this.conn = null
+    let dt = this;
+
     require('amqplib/callback_api')
     .connect('amqp://localhost', function(err, conn) {
       if (err != null){
         console.error(err);
         process.exit(1);
       }
-      conn.createChannel((err, channel) => {
-        if(err){
-          console.error(err);
-          process.exit(1);
-        }else{
-          this.channel = channel;
-        }
-      })
+
+      dt.conn = conn; 
     });
   }
+  
+  
 
-  async pushEvent(emmitCode, data, cb){
-    this.channel.assertQueue(emmitCode, { durable: false }).then(function(ok){
-      return ch.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)));
-    }).then(function(res){
-      if(typeof cb !== "undefined"){
-        cb(null, res);
-      }
-    }).catch(function(err){
-      throw new Error(err);
-    })
+  pushEvent(emmitCode, data, cb){
+    this.conn.createChannel(on_open);
+    function on_open(err, ch) {
+      if (err != null) bail(err);
+      ch.assertQueue(emmitCode);
+      ch.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)));
+    }
   }
-  async sendMail(template, content, cb){
+  sendMail(template, content, cb){
     this.pushEvent('send-mail',{template, content}, cb);
   }
-  async errorLog(content, cb){
+  errorLog(content, cb){
     this.pushEvent('error-log',content, cb);
   }
-  async activityLog(content, cb){
+  activityLog(content, cb){
     this.pushEvent('activity-log',content, cb);
   }
-  async sendNotification(content, cb){
+  sendNotification(content, cb){
     this.pushEvent('push-notification', content, cb);
   }
-  async fetchConfig(cb){
+  fetchConfig(cb){
     this.pushEvent('fetch-config', null, cb);
   }
 }
