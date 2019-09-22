@@ -37,11 +37,11 @@ class MsgBroker{
   sendMail(template, content, cb){
     this.pushEvent('send-mail',{template, content}, cb);
   }
-  errorLog(content, cb){
-    this.pushEvent('error-log',content, cb);
+  errorLog(scene, title, message, filePath, lineNumber, data, cb){
+    this.pushEvent('error-log',{scene, title, message, filePath, lineNumber, data}, cb);
   }
-  activityLog(content, cb){
-    this.pushEvent('activity-log',content, cb);
+  activityLog(scene, status, title, userId, userName, userType, data, cb){
+    this.pushEvent('activity-log',{scene, status, title, userId, userName, userType, data}, cb);
   }
   sendNotification(content, cb){
     this.pushEvent('push-notification', content, cb);
