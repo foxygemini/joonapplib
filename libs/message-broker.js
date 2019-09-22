@@ -1,6 +1,13 @@
 class MsgBroker{
   constructor(){
-    this.conn = null
+    this.channel = {}
+    this.channelKey = {
+      sendMail: 'send-mail',
+      fetchConfig: 'fetch-config',
+      pushNotification: 'push-notification',
+      errorLog: 'error-log',
+      activityLog: 'activity-log'
+    }
     let dt = this;
 
     require('amqplib/callback_api')
@@ -10,19 +17,22 @@ class MsgBroker{
         process.exit(1);
       }
 
-      dt.conn = conn; 
+      conn.createChannel(function(err, ch){
+        if (err != null){
+          console.log(err)
+          process.exit(1);
+        }else{
+          ['send-mail', 'fetch-config', 'push-notification', 'error-log', 'activity-log'].map(key => {
+            ch.assertQueue(key);
+          });
+          dt.channel = ch;
+        }
+      });
     });
   }
-  
-  
 
   pushEvent(emmitCode, data, cb){
-    this.conn.createChannel(on_open);
-    function on_open(err, ch) {
-      if (err != null) bail(err);
-      ch.assertQueue(emmitCode);
-      ch.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)));
-    }
+    this.channel.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)), {}, cb);
   }
   sendMail(template, content, cb){
     this.pushEvent('send-mail',{template, content}, cb);
