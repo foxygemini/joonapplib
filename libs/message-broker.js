@@ -8,11 +8,9 @@ class MsgBroker{
   }
 
   async pushEvent(channel, data, cb){
-    console.log("Start push event");
     this.channel.assertQueue(channel, { durable: false }).then(function(ok){
       return ch.sendToQueue(channel, Buffer.from(JSON.stringify({data})));
     }).then(function(res){
-      console.log("Ch result", res);
       if(typeof cb !== "undefined"){
         cb(null, res);
       }
@@ -20,14 +18,13 @@ class MsgBroker{
       throw new Error(err);
     })
   }
-
-  async sendInfo(data, cb){
-    this.pushEvent(process.constantVar.emmitCode.info,data, cb);
-  }
   async sendMail(template, content, cb){
     this.pushEvent(process.constantVar.emmitCode.mailer,{template, content}, cb);
   }
-  async doLog(content, cb){
+  async errorLog(content, cb){
+    this.pushEvent(process.constantVar.emmitCode.log,{content}, cb);
+  }
+  async activityLog(content, cb){
     this.pushEvent(process.constantVar.emmitCode.log,{content}, cb);
   }
   async sendNotification(content, cb){
