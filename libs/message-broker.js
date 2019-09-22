@@ -1,15 +1,25 @@
 class MsgBroker{
-  constructor(channel){
-    this.channel = channel;
+  constructor(){
+    require('amqplib/callback_api')
+    .connect('amqp://localhost', function(err, conn) {
+      if (err != null){
+        console.error(err);
+        process.exit(1);
+      }
+      conn.createChannel((err, channel) => {
+        if(err){
+          console.error(err);
+          process.exit(1);
+        }else{
+          this.channel = channel;
+        }
+      })
+    });
   }
 
-  getChannel(){
-    return this.channel;
-  }
-
-  async pushEvent(channel, data, cb){
-    this.channel.assertQueue(channel, { durable: false }).then(function(ok){
-      return ch.sendToQueue(channel, Buffer.from(JSON.stringify(data)));
+  async pushEvent(emmitCode, data, cb){
+    this.channel.assertQueue(emmitCode, { durable: false }).then(function(ok){
+      return ch.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)));
     }).then(function(res){
       if(typeof cb !== "undefined"){
         cb(null, res);

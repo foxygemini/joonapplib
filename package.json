@@ -14,6 +14,7 @@
   "author": "Foxy Gemini",
   "license": "ISC",
   "dependencies": {
-    "accounting": "^0.4.1"
+    "accounting": "^0.4.1",
+    "amqplib": "^0.5.5"
   }
 }
