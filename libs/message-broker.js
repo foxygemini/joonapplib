@@ -9,7 +9,7 @@ class MsgBroker{
 
   async pushEvent(channel, data, cb){
     this.channel.assertQueue(channel, { durable: false }).then(function(ok){
-      return ch.sendToQueue(channel, Buffer.from(JSON.stringify({data})));
+      return ch.sendToQueue(channel, Buffer.from(JSON.stringify(data)));
     }).then(function(res){
       if(typeof cb !== "undefined"){
         cb(null, res);
@@ -19,19 +19,19 @@ class MsgBroker{
     })
   }
   async sendMail(template, content, cb){
-    this.pushEvent(process.constantVar.emmitCode.mailer,{template, content}, cb);
+    this.pushEvent('send-mail',{template, content}, cb);
   }
   async errorLog(content, cb){
-    this.pushEvent(process.constantVar.emmitCode.log,{content}, cb);
+    this.pushEvent('error-log',content, cb);
   }
   async activityLog(content, cb){
-    this.pushEvent(process.constantVar.emmitCode.log,{content}, cb);
+    this.pushEvent('activity-log',content, cb);
   }
   async sendNotification(content, cb){
-    this.pushEvent(process.constantVar.emmitCode.notification, {content}, cb);
+    this.pushEvent('push-notification', content, cb);
   }
   async fetchConfig(cb){
-    this.pushEvent(process.constantVar.emmitCode.fetchConfig, null, cb);
+    this.pushEvent('fetch-config', null, cb);
   }
 }
 
