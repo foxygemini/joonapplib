@@ -1,9 +1,9 @@
 {
   "name": "joonapp-library",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": {
     "type": "git",
-    "url": "git://github.com/username/repository.git"
+    "url": "git://github.com/foxygemini/joonapplib.git"
   },
   "description": "Public library for joonapp",
   "main": "index.js",
