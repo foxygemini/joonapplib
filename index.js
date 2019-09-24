@@ -1,3 +1,3 @@
-const ConfigFetcher = require("./libs/config-fetcher"), JsonRenderer = require("./libs/json-renderer"), LogProfiler = require("./libs/log-profiler"), MessageBrokker = require("./libs/message-broker"), MoneyFormatter = require("./libs/money-formatter"), StringRandom = require("./libs/string-random"), StringSlugify = require("./libs/string-slugify");
+const ConfigFetcher = require("./libs/config-fetcher"), JsonRenderer = require("./libs/json-renderer"), LogProfiler = require("./libs/log-profiler"), MessageBrokker = require("./libs/message-broker"), MoneyFormatter = require("./libs/money-formatter"), StringRandom = require("./libs/string-random"), StringSlugify = require("./libs/string-slugify"), JsonReader = require("./libs/json-reader");
 
-module.exports = {ConfigFetcher, JsonRenderer, LogProfiler, MessageBrokker, MoneyFormatter, StringRandom, StringSlugify};
+module.exports = {ConfigFetcher, JsonRenderer, JsonReader, LogProfiler, MessageBrokker, MoneyFormatter, StringRandom, StringSlugify};
