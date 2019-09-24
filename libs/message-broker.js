@@ -11,7 +11,7 @@ class MsgBroker{
     let dt = this;
 
     require('amqplib/callback_api')
-    .connect('amqp://localhost', function(err, conn) {
+    .connect('amqp://'+process.env.MESSAGE_BROKER_USERNAME+":"+process.env.MESSAGE_BROKER_PASSWORD+"@"+process.env.MESSAGE_BROKER_HOST, function(err, conn) {
       if (err != null){
         console.error(err);
         process.exit(1);
