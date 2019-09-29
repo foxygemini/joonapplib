@@ -22,13 +22,39 @@ class MsgBroker{
           console.log(err)
           process.exit(1);
         }else{
-          ['send-mail', 'fetch-config', 'push-notification', 'error-log', 'activity-log'].map(key => {
+          this.channelKey.map(key => {
             ch.assertQueue(key);
           });
           dt.channel = ch;
         }
       });
     });
+  }
+
+  getChannel(){
+    return this.channel;
+  }
+
+  consume(emmitCode, cb){
+    if(this.channelKey.indexOf(emmitCode) > -1){
+      this.getChannel().consume(queueLogError, function(msg) {
+        if (msg !== null) {
+          const content = msg.content.toString();
+          if(content){
+            try{
+              const data = JSON.parse(content);
+              return cb(null, data);
+            }catch(err){
+              return cb(err);
+            }
+          }
+          ch.ack(msg);
+        }
+        return cb("Failed")
+      })
+    }else{
+      cb("Emmit code invalid")
+    }
   }
 
   pushEvent(emmitCode, data, cb){
