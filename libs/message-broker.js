@@ -22,8 +22,8 @@ class MsgBroker{
           console.log(err)
           process.exit(1);
         }else{
-          this.channelKey.map(key => {
-            ch.assertQueue(key);
+          Object.keys(this.channelKey).map(key => {
+            ch.assertQueue(this.channelKey[key]);
           });
           dt.channel = ch;
         }
@@ -36,8 +36,17 @@ class MsgBroker{
   }
 
   consume(emmitCode, cb){
-    if(this.channelKey.indexOf(emmitCode) > -1){
-      this.getChannel().consume(queueLogError, function(msg) {
+    const isKeyExists = k => {
+      let kExists = false;
+      Object.keys(this.channelKey).map(key => {
+        if(!kExists && key == k){
+          kExists = true;
+        }
+      })
+      return kExists
+    }
+    if(isKeyExists(emmitCode)){
+      this.getChannel().consume(emmitCode, function(msg) {
         if (msg !== null) {
           const content = msg.content.toString();
           if(content){
@@ -61,19 +70,19 @@ class MsgBroker{
     this.channel.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)), {}, cb);
   }
   sendMail(template, content, cb){
-    this.pushEvent('send-mail',{template, content}, cb);
+    this.pushEvent(this.channelKey.sendMail,{template, content}, cb);
   }
   errorLog(scene, title, message, filePath, lineNumber, data, cb){
-    this.pushEvent('error-log',{scene, title, message, filePath, lineNumber, data}, cb);
+    this.pushEvent(this.channelKey.errorLog,{scene, title, message, filePath, lineNumber, data}, cb);
   }
   activityLog(scene, status, title, userId, userName, userType, data, cb){
-    this.pushEvent('activity-log',{scene, status, title, userId, userName, userType, data}, cb);
+    this.pushEvent(this.channelKey.activityLog,{scene, status, title, userId, userName, userType, data}, cb);
   }
   sendNotification(content, cb){
-    this.pushEvent('push-notification', content, cb);
+    this.pushEvent(this.channelKey.pushNotification, content, cb);
   }
   fetchConfig(cb){
-    this.pushEvent('fetch-config', null, cb);
+    this.pushEvent(this.channelKey.fetchConfig, null, cb);
   }
 }
 
