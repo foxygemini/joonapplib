@@ -22,13 +22,17 @@ class MsgBroker{
           console.log(err)
           process.exit(1);
         }else{
-          Object.keys(this.channelKey).map(key => {
-            ch.assertQueue(this.channelKey[key]);
+          Object.keys(dt.channelKey).map(key => {
+            ch.assertQueue(dt.channelKey[key]);
           });
-          dt.channel = ch;
+          dt.setChannel(ch);
         }
       });
     });
+  }
+
+  setChannel(channel){
+    this.channel = channel;
   }
 
   getChannel(){
@@ -46,7 +50,8 @@ class MsgBroker{
       return kExists
     }
     if(isKeyExists(emmitCode)){
-      this.getChannel().consume(emmitCode, function(msg) {
+      console.log(this.channel)
+      this.channel.consume(emmitCode, function(msg) {
         if (msg !== null) {
           const content = msg.content.toString();
           if(content){
@@ -86,4 +91,10 @@ class MsgBroker{
   }
 }
 
-module.exports = MsgBroker;
+module.exports = () => new Promise((resolve, reject) => {
+  const queueJob = new MsgBroker();
+
+  setTimeout(() => {
+    resolve(queueJob);
+  }, 2000);
+});
