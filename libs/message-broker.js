@@ -39,7 +39,7 @@ class MsgBroker{
     const isKeyExists = k => {
       let kExists = false;
       Object.keys(this.channelKey).map(key => {
-        if(!kExists && key == k){
+        if(!kExists && this.channelKey[key] == k){
           kExists = true;
         }
       })

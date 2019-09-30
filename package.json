@@ -1,6 +1,6 @@
 {
   "name": "joonapp-library",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "repository": {
     "type": "git",
     "url": "git://github.com/foxygemini/joonapplib.git"
