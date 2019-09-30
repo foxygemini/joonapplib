@@ -11,7 +11,7 @@ class MsgBroker{
   }
 
   connect(){
-    return Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let dt = this;
   
       require('amqplib/callback_api')
