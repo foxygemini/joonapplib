@@ -58,7 +58,6 @@ class MsgBroker{
       return kExists
     }
     if(isKeyExists(emmitCode)){
-      console.log(this.channel)
       this.channel.consume(emmitCode, function(msg) {
         if (msg !== null) {
           const content = msg.content.toString();
