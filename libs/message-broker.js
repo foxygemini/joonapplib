@@ -8,28 +8,36 @@ class MsgBroker{
       errorLog: 'error-log',
       activityLog: 'activity-log'
     }
-    let dt = this;
-
-    require('amqplib/callback_api')
-    .connect('amqp://'+process.env.MESSAGE_BROKER_USERNAME+":"+process.env.MESSAGE_BROKER_PASSWORD+"@"+process.env.MESSAGE_BROKER_HOST, function(err, conn) {
-      if (err != null){
-        console.error(err);
-        process.exit(1);
-      }
-
-      conn.createChannel(function(err, ch){
-        if (err != null){
-          console.log(err)
-          process.exit(1);
-        }else{
-          Object.keys(dt.channelKey).map(key => {
-            ch.assertQueue(dt.channelKey[key]);
-          });
-          dt.setChannel(ch);
-        }
-      });
-    });
   }
+
+  connect(){
+    return Promise((resolve, reject) => {
+      let dt = this;
+  
+      require('amqplib/callback_api')
+      .connect('amqp://'+process.env.MESSAGE_BROKER_USERNAME+":"+process.env.MESSAGE_BROKER_PASSWORD+"@"+process.env.MESSAGE_BROKER_HOST, function(err, conn) {
+        if (err != null){
+          console.error(err);
+          process.exit(1);
+        }
+  
+        conn.createChannel(function(err, ch){
+          if (err != null){
+            reject(err)
+          }else{
+            Object.keys(dt.channelKey).map(key => {
+              ch.assertQueue(dt.channelKey[key]);
+            });
+            dt.setChannel(ch);
+            resolve(dt);
+          }
+        });
+      });
+
+    })
+    
+  }
+  
 
   setChannel(channel){
     this.channel = channel;
@@ -91,10 +99,4 @@ class MsgBroker{
   }
 }
 
-module.exports = () => new Promise((resolve, reject) => {
-  const queueJob = new MsgBroker();
-
-  setTimeout(() => {
-    resolve(queueJob);
-  }, 2000);
-});
+module.exports = MsgBroker;
